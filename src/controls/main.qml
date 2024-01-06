@@ -4,6 +4,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.12
 import org.mauikit.controls 1.3 as Maui
 import org.kde.novarewind 1.0
+import QtQuick.Window 2.15
 
 Maui.ApplicationWindow
 {
@@ -13,6 +14,9 @@ Maui.ApplicationWindow
     property string password
     property int removeIndex
     property int restoreIndex
+
+    width: Screen.desktopAvailableWidth - Screen.desktopAvailableWidth * 50 / 100
+    height: Screen.desktopAvailableHeight - Screen.desktopAvailableHeight * 25 / 100
 
     ListModel { id: snapshotModel }
 
