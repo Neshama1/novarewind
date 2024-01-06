@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=Nova Rewind
+Comment=Create restore points on btrfs file systems
+TryExec=novarewind
+Exec=novarewind %U
+Terminal=false
+Type=Application
+GenericName=
+StartupNotify=true
+Icon=novarewind
+Categories=Qt;KDE;
+MimeType=
+SingleMainWindow=true

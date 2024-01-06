@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Home.qml</file>
+        <file>GetPassword.qml</file>
+        <file>Create.qml</file>
+        <file>Remove.qml</file>
+        <file>RemoveConfirmation.qml</file>
+        <file>Restore.qml</file>
+        <file>RestoreConfirmation.qml</file>
+        <file>RestoreResult.qml</file>
+    </qresource>
+</RCC>
