@@ -1,0 +1,15 @@
+rebuild_master:
+    steps:
+        - rebuild_package:
+            project: home:hopeandtruth6517:test
+            package: novarewind
+    filters:
+    event: push
+workflow:
+  steps:
+    - branch_package:
+        source_project: home:hopeandtruth6517
+        source_package: novarewind
+        target_project: home:hopeandtruth6517:nova-apps
+  filters:
+    event: tag_push 
