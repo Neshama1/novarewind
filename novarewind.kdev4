@@ -1,4 +1,5 @@
 [Project]
-Name=novarewind
+CreatedFrom=CMakeLists.txt
 Manager=KDevCMakeManager
+Name=novarewind
 VersionControl=

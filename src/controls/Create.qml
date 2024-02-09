@@ -27,7 +27,7 @@ Maui.Page {
 
     Component.onCompleted: {
         xAnimation.start()
-        Snapshot.createSnapshot(getMntPoint())
+        Snapshot.createSnapshot()
     }
 
     PropertyAnimation {
@@ -38,10 +38,6 @@ Maui.Page {
         to: 0
         duration: 2000
         easing.type: Easing.OutExpo
-    }
-
-    function getMntPoint() {
-        return `findmnt / --output=SOURCE | grep "[/@]" | awk '{gsub(/\\[/,"");}1' | sed 's;/@;;' | awk '{gsub(/\\]/,"");}1'`
     }
 
     function getDateTime() {

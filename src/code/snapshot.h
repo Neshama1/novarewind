@@ -21,10 +21,10 @@ private slots:
 
 public:
     Q_INVOKABLE void setPassword(const QString& password);
-    Q_INVOKABLE void createSnapshot(const QString& findmntcommand);
-    Q_INVOKABLE void listSnapshots(const QString& findmntcommand);
-    Q_INVOKABLE void removeSnapshot(const QString& dateTime);
-    Q_INVOKABLE void restoreSnapshot(const QString& dateTime);
+    Q_INVOKABLE int createSnapshot();
+    Q_INVOKABLE QStringList listSnapshots();
+    Q_INVOKABLE int removeSnapshot(const QString& dateTime);
+    Q_INVOKABLE int restoreSnapshot(const QString& dateTime);
     Q_INVOKABLE void setMode(const QString& mode);
     Q_INVOKABLE QString getMode();
 

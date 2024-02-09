@@ -32,14 +32,10 @@ Maui.Page {
 
     function getSnapshots() {
         snapshotModel.clear()
-        Snapshot.listSnapshots(getMntPoint())
+        Snapshot.listSnapshots()
         for (var i = 0; i < Snapshot.points.length; i++) {
             snapshotModel.append({"point": Snapshot.points[i]})
         }
-    }
-
-    function getMntPoint() {
-        return `findmnt / --output=SOURCE | grep "[/@]" | awk '{gsub(/\\[/,"");}1' | sed 's;/@;;' | awk '{gsub(/\\]/,"");}1'`
     }
 
     Connections {
