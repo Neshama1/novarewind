@@ -86,7 +86,7 @@ Maui.ApplicationWindow
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 12
                     wrapMode: Text.WordWrap
-                    text: "It is possible to restore the system without a graphical interface in case your PC does not boot\n\nTurn on your pc\nAdvanced options for Nova Flow\nNova Flow, with Linux 6.7.2-1-default (recovery mode)\nEnter your password (no prompt shown)\nsudo su your_user\ncd /home/your_user"
+                    text: "It is possible to restore the system without a graphical interface in case your PC does not boot\n\nTurn on your pc\nAdvanced options for Nova Flow\nNova Flow, with Linux 6.7.2-1-default (recovery mode)\nEnter your password (no prompt shown)"
             }
         }
 

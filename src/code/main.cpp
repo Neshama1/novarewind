@@ -17,10 +17,7 @@
 #include <QDebug>
 #include <QString>
 #include <QStringList>
-#include <QTextStream>
-#include <QLoggingCategory>
-
-#include <iostream>
+#include <QtGlobal>
 
 //Useful for setting quickly an app template
 #define ORG_NAME "KDE"
@@ -35,6 +32,8 @@
 int main(int argc, char *argv[])
 {
     if (argc > 1) {
+
+        qputenv("QT_QPA_PLATFORM",QByteArray("offscreen"));
 
         QApplication appCLI(argc, argv, false);
 

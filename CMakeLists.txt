@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(novarewind VERSION 0.1.4)
+project(novarewind VERSION 0.1.5)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
