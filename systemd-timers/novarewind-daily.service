@@ -1,0 +1,9 @@
+[Unit]
+Description=Daily snapshot created with Nova Rewind
+
+[Service]
+Type=simple
+ExecStart=novarewind create daily
+
+[Install]
+WantedBy=multi-user.target

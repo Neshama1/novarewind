@@ -76,7 +76,7 @@ Maui.Page {
             anchors.fill: parent
             anchors.margins: 10
             font.pixelSize: 16
-            text: "Restore point: " + Snapshot.points[restoreIndex]
+            text: "Restore point: " + Snapshot.points[restoreIndex].dateTime
         }
     }
 

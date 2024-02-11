@@ -1,0 +1,11 @@
+[Unit]
+Description=Execute task every day
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+Unit=novarewind-daily.service
+
+[Install]
+WantedBy=timers.target

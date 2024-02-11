@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(novarewind VERSION 0.1.5)
+project(novarewind VERSION 0.1.6)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -31,7 +31,7 @@ include(ECMSourceVersionControl)
 include(FeatureSummary)
 
 find_package(Qt5 ${QT_MIN_VERSION} REQUIRED COMPONENTS Core Quick Qml Widgets)
-find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS I18n CoreAddons)
+find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS I18n CoreAddons Config)
 
 find_package(Qt5QuickCompiler)
 set_package_properties(Qt5QuickCompiler PROPERTIES

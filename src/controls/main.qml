@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.12
 import org.mauikit.controls 1.3 as Maui
 import org.kde.novarewind 1.0
 import QtQuick.Window 2.15
+import Qt.labs.settings 1.0
 
 Maui.ApplicationWindow
 {
@@ -14,6 +15,22 @@ Maui.ApplicationWindow
     property string password
     property int removeIndex
     property int restoreIndex
+
+    property int keepDaily: 3
+    property int keepWeekly: 1
+    property int keepMonthly: 1
+    property bool daily: true
+    property bool weekly: true
+    property bool monthly: true
+
+    Settings {
+        property alias keepDaily: root.keepDaily
+        property alias keepWeekly: root.keepWeekly
+        property alias keepMonthy: root.keepMonthly
+        property alias daily: root.daily
+        property alias weekly: root.weekly
+        property alias monthy: root.monthly
+    }
 
     width: Screen.desktopAvailableWidth - Screen.desktopAvailableWidth * 50 / 100
     height: Screen.desktopAvailableHeight - Screen.desktopAvailableHeight * 25 / 100
@@ -27,12 +44,25 @@ Maui.ApplicationWindow
         }
     }
 
+    Component.onCompleted: {
+        Snapshot.setDailyConfig(daily, keepDaily)
+        Snapshot.setWeeklyConfig(weekly, keepWeekly)
+        Snapshot.setMonthlyConfig(monthly, keepMonthly)
+    }
+
+    SettingsDialog
+    {
+        id: settingsDialog
+    }
+
     Maui.PopupPage
     {
         id: popupPage
         hint: 1
 
         title: i18n("Terminal")
+
+        width: 400
 
         headBar.background: Maui.ShadowedRectangle {
             anchors.fill: parent
@@ -78,15 +108,38 @@ Maui.ApplicationWindow
             anchors.right: parent.right
             height: 200
             radius: 4
-            color: Maui.Theme.alternateBackgroundColor
+            color: Maui.Theme.backgroundColor
             Label {
+                    //anchors.fill: parent
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.margins: 10
+                    height: parent.height / 3
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 16
+                    wrapMode: Text.WordWrap
+                    text: "It is possible to restore the system without a graphical interface in case your PC does not boot" //\n\nTurn on your pc\nAdvanced options for Nova Flow\nNova Flow, with Linux 6.7.2-1-default (recovery mode)\nEnter your password (no prompt shown)\nType exit to restart"
+            }
+            Rectangle {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                anchors.margins: 10
+                height: parent.height / 2
+                radius: 4
+                color: Qt.lighter(Maui.Theme.backgroundColor,1.05)
+                Label {
                     anchors.fill: parent
                     anchors.margins: 10
+                    height: parent.height / 2
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 12
                     wrapMode: Text.WordWrap
-                    text: "It is possible to restore the system without a graphical interface in case your PC does not boot\n\nTurn on your pc\nAdvanced options for Nova Flow\nNova Flow, with Linux 6.7.2-1-default (recovery mode)\nEnter your password (no prompt shown)"
+                    text: "Turn on your pc\nAdvanced options for Nova Flow\nNova Flow, with Linux 6.7.2-1-default (recovery mode)\nEnter your password (no prompt shown)\nType exit to restart"
+                }
             }
         }
 
@@ -195,6 +248,12 @@ Maui.ApplicationWindow
                 {
                     icon.name: "application-menu"
 
+                    MenuItem
+                    {
+                        text: i18n("Settings")
+                        icon.name: "settings-configure"
+                        onTriggered: settingsDialog.open()
+                    }
                     MenuItem
                     {
                         text: i18n("Terminal")

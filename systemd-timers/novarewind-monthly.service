@@ -1,0 +1,9 @@
+[Unit]
+Description=Monthly snapshot created with Nova Rewind
+
+[Service]
+Type=simple
+ExecStart=novarewind create monthly
+
+[Install]
+WantedBy=multi-user.target

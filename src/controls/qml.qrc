@@ -9,5 +9,6 @@
         <file>Restore.qml</file>
         <file>RestoreConfirmation.qml</file>
         <file>RestoreResult.qml</file>
+        <file>SettingsDialog.qml</file>
     </qresource>
 </RCC>

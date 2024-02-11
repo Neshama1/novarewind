@@ -29,6 +29,7 @@ target_link_libraries(${PROJECT_NAME}
 
     KF5::CoreAddons
     KF5::I18n
+    KF5::ConfigCore
     )
 
 install(TARGETS ${PROJECT_NAME} ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})

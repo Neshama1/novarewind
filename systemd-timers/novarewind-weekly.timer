@@ -1,0 +1,11 @@
+[Unit]
+Description=Execute task every week
+
+[Timer]
+OnCalendar=weekly
+Persistent=true
+
+Unit=novarewind-weekly.service
+
+[Install]
+WantedBy=timers.target

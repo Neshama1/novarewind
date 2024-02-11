@@ -1,0 +1,11 @@
+[Unit]
+Description=Execute task every month
+
+[Timer]
+OnCalendar=monthly
+Persistent=true
+
+Unit=novarewind-monthly.service
+
+[Install]
+WantedBy=timers.target

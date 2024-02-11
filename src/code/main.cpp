@@ -17,6 +17,8 @@
 #include <QDebug>
 #include <QString>
 #include <QStringList>
+#include <QVariantList>
+#include <QVariantMap>
 #include <QtGlobal>
 
 //Useful for setting quickly an app template
@@ -40,10 +42,10 @@ int main(int argc, char *argv[])
         QCommandLineParser parserCLI;
         parserCLI.setApplicationDescription("\nCreate restore points on btrfs file sytems\n\nUsage:\n  novarewind list\n  novarewind create\n  novarewind restore 20240207-191526\n  novarewind remove 20240208-110002");
         parserCLI.addHelpOption();
-        parserCLI.addPositionalArgument(QStringLiteral("list"), "list restore points", "+[list]");
-        parserCLI.addPositionalArgument(QStringLiteral("create"), "create a restore point", "+[create]");
-        parserCLI.addPositionalArgument(QStringLiteral("restore"), "restore a snapshot", "+[restore]");
-        parserCLI.addPositionalArgument(QStringLiteral("remove"), "remove a snapshot", "+[remove]");
+        parserCLI.addPositionalArgument(QStringLiteral("list"), "list restore points", "[list]");
+        parserCLI.addPositionalArgument(QStringLiteral("create"), "create a restore point", "[create]");
+        parserCLI.addPositionalArgument(QStringLiteral("restore"), "restore a snapshot", "[restore]");
+        parserCLI.addPositionalArgument(QStringLiteral("remove"), "remove a snapshot", "[remove]");
         parserCLI.process(appCLI);
 
         QStringList args = parserCLI.positionalArguments();
@@ -58,31 +60,46 @@ int main(int argc, char *argv[])
         }
 
         Snapshot snapshot;
-        snapshot.setMode("console");
 
         if (arg0 == "list") {
-            QStringList points = snapshot.listSnapshots();
+            snapshot.setMode("console");
+            QVariantList points = snapshot.listSnapshots();
             qInfo() << "\nRestore points:\n";
             for (int i=0 ; i<points.count() ; i++) {
-                qInfo() << i+1 << points[i];
+                QVariantMap point = points[i].toMap();
+                qInfo() << i+1 << point["dateTime"].toString() << "type:" << point["type"].toString();
             }
 
             qInfo() << "\n";
         }
         else if (arg0 == "create") {
-            int error = snapshot.createSnapshot();
+            if (arg1 == "") {
+                snapshot.setMode("console");
+            }
+            else {
+                snapshot.setMode(arg1);
+            }
+            int error = 0;
+
+            error = snapshot.readSnapshotsList();
+            error = snapshot.createSnapshot();
+
             if (error == 0) {
                 qInfo() << "\nA new restore point has been created successfully\n";
             }
         }
         else if (arg0 == "restore") {
+            snapshot.setMode("console");
             int error = snapshot.restoreSnapshot(arg1);
             if (error == 0) {
                 qInfo() << "\nA new point has been restored successfully\n";
             }
         }
         else if (arg0 == "remove") {
-            int error = snapshot.removeSnapshot(arg1);
+            snapshot.setMode("console");
+            int error = 0;
+            error = snapshot.readSnapshotsList();
+            error = snapshot.removeSnapshot(arg1);
             if (error == 0) {
                 qInfo() << "\nRestore point has been removed successfully\n";
             }

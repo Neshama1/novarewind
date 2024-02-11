@@ -34,7 +34,7 @@ Maui.Page {
         snapshotModel.clear()
         Snapshot.listSnapshots()
         for (var i = 0; i < Snapshot.points.length; i++) {
-            snapshotModel.append({"point": Snapshot.points[i]})
+            snapshotModel.append({"point": Snapshot.points[i].dateTime,"type": Snapshot.points[i].type})
         }
     }
 
@@ -122,6 +122,16 @@ Maui.Page {
                     anchors.margins: 10
                     font.pixelSize: 16
                     text: "Restore point: " + point
+                }
+
+                Maui.Badge
+                {
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.margins: 10
+                    property string snapshotType: type
+                    visible: type == "daily" || type == "weekly" || type == "monthly" ? true : false
+                    text: type == "daily" || type == "weekly" || type == "monthly" ? snapshotType.charAt(0).toUpperCase() : ""
                 }
             }
             MouseArea {

@@ -2,19 +2,23 @@
 
 #include <QObject>
 #include <QDebug>
+#include <QVariantList>
 
 class Snapshot : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QStringList points READ points WRITE setPoints NOTIFY pointsChanged)
+    Q_PROPERTY(QVariantList points READ points WRITE setPoints NOTIFY pointsChanged)
 
 public:
-    QStringList points() const;
-    void setPoints(const QStringList &points);
+    explicit Snapshot(QObject *parent = nullptr);
+
+public:
+    QVariantList points() const;
+    void setPoints(const QVariantList &points);
     Q_SIGNAL void pointsChanged();
 
 private:
-    QStringList m_points;
+    QVariantList m_points;
 
 private slots:
     void on_PointsChanged();
@@ -22,16 +26,33 @@ private slots:
 public:
     Q_INVOKABLE void setPassword(const QString& password);
     Q_INVOKABLE int createSnapshot();
-    Q_INVOKABLE QStringList listSnapshots();
+    Q_INVOKABLE QVariantList listSnapshots();
     Q_INVOKABLE int removeSnapshot(const QString& dateTime);
     Q_INVOKABLE int restoreSnapshot(const QString& dateTime);
     Q_INVOKABLE void setMode(const QString& mode);
     Q_INVOKABLE QString getMode();
+    Q_INVOKABLE int saveSnapshotsList();
+    Q_INVOKABLE int readSnapshotsList();
+    Q_INVOKABLE int mount();
+    Q_INVOKABLE void addSnapshot(const QString& dateTime);
+    Q_INVOKABLE void setDailyConfig(bool daily, int keepDaily);
+    Q_INVOKABLE void setWeeklyConfig(bool weekly, int keepWeekly);
+    Q_INVOKABLE void setMonthlyConfig(bool monthly, int keepMonthly);
+    Q_INVOKABLE void removeAutoSnapshotsIfNeeded();
+    Q_INVOKABLE void removeDailySnapshotsIfNeeded();
+    Q_INVOKABLE void removeWeeklySnapshotsIfNeeded();
+    Q_INVOKABLE void removeMonthlySnapshotsIfNeeded();
 
 private:
     QString m_password;
     QString m_mntPoint;
     QString m_mode;
+    bool m_daily;
+    bool m_weekly;
+    bool m_monthly;
+    int m_keepDaily;
+    int m_keepWeekly;
+    int m_keepMonthly;
 
 signals:
     void finished(QString data);
