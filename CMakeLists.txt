@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(novarewind VERSION 0.1.6)
+project(novarewind VERSION 0.1.7)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -86,4 +86,3 @@ feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
 file(GLOB_RECURSE ALL_CLANG_FORMAT_SOURCE_FILES *.cpp *.h)
 kde_clang_format(${ALL_CLANG_FORMAT_SOURCE_FILES})
-

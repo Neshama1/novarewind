@@ -109,18 +109,38 @@ Maui.ApplicationWindow
             height: 200
             radius: 4
             color: Maui.Theme.backgroundColor
-            Label {
-                    //anchors.fill: parent
+            Column {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                height: parent.height / 3
+                Label {
+                    id: lbRecoveryTitle
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.margins: 10
-                    height: parent.height / 3
+                    //height: 15
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
-                    font.pixelSize: 16
+                    font.pixelSize: 17
+                    wrapMode: Text.WordWrap
+                    text: "Recovery options in Nova Flow OS"
+                }
+                Label {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: lbRecoveryTitle.bottom
+                    anchors.bottom: parent.bottom
+                    anchors.leftMargin: 10
+                    anchors.rightMargin: 10
+                    anchors.topMargin: 10
+                    //height: parent.height / 3
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 12
                     wrapMode: Text.WordWrap
                     text: "It is possible to restore the system without a graphical interface in case your PC does not boot" //\n\nTurn on your pc\nAdvanced options for Nova Flow\nNova Flow, with Linux 6.7.2-1-default (recovery mode)\nEnter your password (no prompt shown)\nType exit to restart"
+                }
             }
             Rectangle {
                 anchors.left: parent.left
@@ -128,7 +148,7 @@ Maui.ApplicationWindow
                 anchors.bottom: parent.bottom
                 anchors.margins: 10
                 height: parent.height / 2
-                radius: 4
+                radius: 3
                 color: Qt.lighter(Maui.Theme.backgroundColor,1.05)
                 Label {
                     anchors.fill: parent
@@ -138,7 +158,7 @@ Maui.ApplicationWindow
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 12
                     wrapMode: Text.WordWrap
-                    text: "Turn on your pc\nAdvanced options for Nova Flow\nNova Flow, with Linux 6.7.2-1-default (recovery mode)\nEnter your password (no prompt shown)\nType exit to restart"
+                    text: "Turn on your pc\nAdvanced options for Nova Flow\nNova Flow, with Linux X.X.X-X-default (recovery mode)\nEnter your password (no prompt shown)\nType exit to restart"
                 }
             }
         }
