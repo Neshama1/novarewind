@@ -38,14 +38,12 @@ Maui.Page {
         anchors.margins: 20
 
         Label {
-            anchors.left: parent.left
-            anchors.right: parent.right
+            Layout.preferredWidth: parent.width
             font.pixelSize: 28
             text: "Verify your identity"
         }
         Label {
-            anchors.left: parent.left
-            anchors.right: parent.right
+            Layout.preferredWidth: parent.width
             font.pixelSize: 16
             wrapMode: Text.WordWrap
             text: "You must enter an administrator password to verify that you have privileges to complete certain tasks"
