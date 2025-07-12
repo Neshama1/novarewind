@@ -35,7 +35,8 @@ void Snapshot::setPassword(const QString& password)
 
 void Snapshot::setMode(const QString& mode)
 {
-    // modes: create, restore, remove, console, daily, weekly, monthly
+    // modes: create, restore, remove, console
+    // system-d timers: daily, weekly, monthly
 
     m_mode = mode;
 }
@@ -95,34 +96,91 @@ void Snapshot::setMonthlyConfig(bool monthly, int keepMonthly)
 
 int Snapshot::createSnapshot()
 {
-    if ((getMode() == "daily" && m_daily == false) || (getMode() == "weekly" && m_weekly == false) || (getMode() == "monthly" && m_monthly == false)) {
-        return 1;
-    }
+    // Read snapshots
 
     m_points.clear();
     readSnapshotsList();
 
     // Get current date and time
+
+    QDate today = today.currentDate();
+    QDateTime dateTime = dateTime.currentDateTime();
+    QString currentDateTime = dateTime.toString("yyyyMMdd-hhmmss");
+
+    //QString today = dateTime.toString("yyyyMMdd");
+
+    int error = 0;
+
+    // Create snapshot
+
+    // Create automatic snapshot on boot
+
+    if (m_daily && (getMode() == "daily"))
+    {
+        QDate lastSnapshot = getLastSnapshot("daily");
+        int days = lastSnapshot.daysTo(today);
+
+        if ((days > 0) || lastSnapshot.isNull()) {
+            error = createAutoSnapshot("daily", currentDateTime);
+        }
+    }
+
+    if (m_weekly && (getMode() == "weekly"))
+    {
+        QDate lastSnapshot = getLastSnapshot("weekly");
+        int days = lastSnapshot.daysTo(today);
+
+        // Si han pasado 7 días o más o último snapshot semanal fue en día distinto de lunes y hoy es lunes
+
+        if ((days >= 7) || ((days < 7) && ((lastSnapshot.day() != 1 && (today.day() == 1)))) || lastSnapshot.isNull()) {
+            error = createAutoSnapshot("weekly", currentDateTime);
+        }
+    }
+
+    if (m_monthly && (getMode() == "monthly"))
+    {
+        QDate lastSnapshot = getLastSnapshot("monthly");
+
+        if ((lastSnapshot.month() != today.month()) || (lastSnapshot.year() != today.year()) || lastSnapshot.isNull()) {
+            error = createAutoSnapshot("monthly", currentDateTime);
+        }
+    }
+
+    if ((getMode() == "create") || (getMode() == "console"))
+    {
+        // Create manual snapshot
+
+        error = createManualSnapshot();
+    }
+
+    return error;
+}
+
+int Snapshot::createManualSnapshot()
+{
+    int error = 0;
+
     QDateTime dateTime = dateTime.currentDateTime();
     QString currentDateTime = dateTime.toString("yyyyMMdd-hhmmss");
 
     // Password
+
     QByteArray sudoPwd(m_password.toUtf8());
 
     // Create snapshot
-    int error = 0;
-
 
     QDir dir;
     if (dir.exists("/novarewind/snapshots/" + currentDateTime)) {
         return 1;
     }
 
-    if (getMode() == "console" || getMode() == "daily" || getMode() == "weekly" || getMode() == "monthly") {
-        error = system("sudo btrfs subvolume snapshot -r /novarewind/@ /novarewind/snapshots/" + currentDateTime.toUtf8());
+    if (getMode() == "console") {
+        m_command = "sudo btrfs subvolume snapshot -r /novarewind/@ /novarewind/snapshots/" + currentDateTime;
+        error = system(m_command.toUtf8());
     }
     else {
-        error = system("echo " + sudoPwd + " | sudo -S btrfs subvolume snapshot -r /novarewind/@ /novarewind/snapshots/" + currentDateTime.toUtf8());
+        m_command = "echo " + sudoPwd + " | sudo -S btrfs subvolume snapshot -r /novarewind/@ /novarewind/snapshots/" + currentDateTime;
+        error = system(m_command.toUtf8());
     }
 
     if (error == 0) {
@@ -139,6 +197,68 @@ int Snapshot::createSnapshot()
     }
 
     return error;
+}
+
+int Snapshot::createAutoSnapshot(const QString& mode, const QString& currentDateTime)
+{
+    setMode(mode);
+
+    int error = 0;
+
+    QDir dir;
+    if (dir.exists("/novarewind/snapshots/" + currentDateTime)) {
+        return 1;
+    }
+
+    m_command = "sudo btrfs subvolume snapshot -r /novarewind/@ /novarewind/snapshots/" + currentDateTime;
+    error = system(m_command.toUtf8());
+
+
+    if (error == 0) {
+        addSnapshot(currentDateTime);
+        error = saveSnapshotsList();
+    }
+
+    if (error != 0) {
+        m_password = "";
+        failed();
+    }
+    else {
+        finished(currentDateTime);
+    }
+
+    return error;
+}
+
+QDate Snapshot::getLastSnapshot(const QString& mode)
+{
+    m_points.clear();
+    readSnapshotsList();
+
+    QString lastDay;
+
+    for (int i = 0; i < m_points.count(); i++) {
+        QVariantMap point = m_points[i].toMap();
+        if (point["type"].toString() == mode)
+        {
+            lastDay = point["dateTime"].toString();
+        }
+    }
+
+    lastDay.remove(8, 7);
+    QDate lastSnapshot = getSnapshotDate(lastDay);
+
+    return lastSnapshot;
+}
+
+QDate Snapshot::getSnapshotDate(const QString& date)
+{
+    int year = date.mid(0,4).toInt();
+    int month = date.mid(4,2).toInt();
+    int day = date.mid(6,2).toInt();
+
+    QDate snapshotDate(year, month, day);
+    return snapshotDate;
 }
 
 QVariantList Snapshot::listSnapshots()
@@ -167,7 +287,8 @@ int Snapshot::removeSnapshot(const QString& dateTime)
     QByteArray sudoPwd(m_password.toUtf8());
 
     if (getMode() == "console" || getMode() == "daily" || getMode() == "weekly" || getMode() == "monthly") {
-        error = system("sudo btrfs subvolume delete /novarewind/snapshots/" + dateTime.toUtf8());
+        m_command = "sudo btrfs subvolume delete /novarewind/snapshots/" + dateTime;
+        error = system(m_command.toUtf8());
         if (error == 0) {
             for (int i = 0 ; i < m_points.count(); i++) {
                 QVariantMap point = m_points[i].toMap();
@@ -176,10 +297,12 @@ int Snapshot::removeSnapshot(const QString& dateTime)
                 }
             }
         }
-        error = system("sudo rm /novarewind/rc/novarewindrc");
+        m_command = "sudo rm /novarewind/rc/novarewindrc";
+        error = system(m_command.toUtf8());
     }
     else {
-        error = system("echo " + sudoPwd + " | sudo -S btrfs subvolume delete /novarewind/snapshots/" + dateTime.toUtf8());
+        m_command = "echo " + sudoPwd + " | sudo -S btrfs subvolume delete /novarewind/snapshots/" + dateTime;
+        error = system(m_command.toUtf8());
         if (error == 0) {
             for (int i=0 ; i<m_points.count() ; i++) {
                 QVariantMap point = m_points[i].toMap();
@@ -188,7 +311,8 @@ int Snapshot::removeSnapshot(const QString& dateTime)
                 }
             }
         }
-        error = system("echo " + sudoPwd + " | sudo -S rm /novarewind/rc/novarewindrc");
+        m_command = "echo " + sudoPwd + " | sudo -S rm /novarewind/rc/novarewindrc";
+        error = system(m_command.toUtf8());
     }
 
     error = saveSnapshotsList();
@@ -217,17 +341,28 @@ int Snapshot::restoreSnapshot(const QString& dateTime)
 
     if (getMode() == "console") {
         if (dirOrig.exists("/novarewind/@orig")) {
-            error = system("sudo btrfs subvolume delete /novarewind/@orig");
+
+            m_command = "sudo btrfs subvolume delete /novarewind/@orig";
+            error = system(m_command.toUtf8());
         }
-        error = system("sudo mv /novarewind/@ /novarewind/@orig");
-        error = system("sudo btrfs subvolume snapshot /novarewind/snapshots/" + dateTime.toUtf8() + " /novarewind/@");
+
+        m_command = "sudo mv /novarewind/@ /novarewind/@orig";
+        error = system(m_command.toUtf8());
+
+        m_command = "sudo btrfs subvolume snapshot /novarewind/snapshots/" + dateTime + " /novarewind/@";
+        error = system(m_command.toUtf8());
     }
     else {
         if (dirOrig.exists("/novarewind/@orig")) {
-            error = system("echo " + sudoPwd + " | sudo -S btrfs subvolume delete /novarewind/@orig");
+            m_command = "echo " + sudoPwd + " | sudo -S btrfs subvolume delete /novarewind/@orig";
+            error = system(m_command.toUtf8());
         }
-        error = system("echo " + sudoPwd + " | sudo -S mv /novarewind/@ /novarewind/@orig");
-        error = system("echo " + sudoPwd + " | sudo -S btrfs subvolume snapshot /novarewind/snapshots/" + dateTime.toUtf8() + " /novarewind/@");
+
+        m_command = "echo " + sudoPwd + " | sudo -S mv /novarewind/@ /novarewind/@orig";
+        error = system(m_command.toUtf8());
+
+        m_command = "echo " + sudoPwd + " | sudo -S btrfs subvolume snapshot /novarewind/snapshots/" + dateTime + " /novarewind/@";
+        error = system(m_command.toUtf8());
     }
 
     if (error != 0) {
@@ -250,23 +385,32 @@ int Snapshot::saveSnapshotsList()
     QDir dir;
     if (!dir.exists("/novarewind/rc")) {
         if (getMode() == "console" || getMode() == "daily" || getMode() == "weekly" || getMode() == "monthly") {
-            error = system("sudo mkdir -p /novarewind/rc");
-            error = system("sudo chown " + userName.toUtf8() + ":" + userName.toUtf8() + " /novarewind/rc");
+
+            m_command = "sudo mkdir -p /novarewind/rc";
+            error = system(m_command.toUtf8());
+
+            m_command = "sudo chown " + userName + ":" + userName + " /novarewind/rc";
+            error = system(m_command.toUtf8());
         }
         else {
-            error = system("echo " + sudoPwd + " | sudo -S mkdir -p /novarewind/rc");
-            error = system("echo " + sudoPwd + " | sudo -S chown " + userName.toUtf8() + ":" + userName.toUtf8() + " /novarewind/rc");
+            m_command = "echo " + sudoPwd + " | sudo -S mkdir -p /novarewind/rc";
+            error = system(m_command.toUtf8());
+
+            m_command = "echo " + sudoPwd + " | sudo -S chown " + userName.toUtf8() + ":" + userName.toUtf8() + " /novarewind/rc";
+            error = system(m_command.toUtf8());
         }
     }
 
     if (getMode() == "console" || getMode() == "daily" || getMode() == "weekly" || getMode() == "monthly") {
         if (QFile::exists("/novarewind/rc/novarewindrc")) {
-            error = system("sudo rm /novarewind/rc/novarewindrc");
+            m_command = "sudo rm /novarewind/rc/novarewindrc";
+            error = system(m_command.toUtf8());
         }
     }
     else {
         if (QFile::exists("/novarewind/rc/novarewindrc")) {
-            error = system("echo " + sudoPwd + " | sudo -S rm /novarewind/rc/novarewindrc");
+            m_command = "echo " + sudoPwd + " | sudo -S rm /novarewind/rc/novarewindrc";
+            error = system(m_command.toUtf8());
         }
     }
 
@@ -382,17 +526,27 @@ int Snapshot::mount()
     if (getMode() == "console" || getMode() == "daily" || getMode() == "weekly" || getMode() == "monthly") {
         QDir dir;
         if (!dir.exists("/novarewind/@")) {
-            error = system("sudo mkdir -p /novarewind");
-            error = system("sudo mount " + m_mntPoint.toUtf8() + " /novarewind");
-            error = system("sudo mkdir -p /novarewind/snapshots");
+            m_command = "sudo mkdir -p /novarewind";
+            error = system(m_command.toUtf8());
+
+            m_command = "sudo mount " + m_mntPoint + " /novarewind";
+            error = system(m_command.toUtf8());
+
+            m_command = "sudo mkdir -p /novarewind/snapshots";
+            error = system(m_command.toUtf8());
         }
     }
     else {
         QDir dir;
         if (!dir.exists("/novarewind/@")) {
-            error = system("echo " + sudoPwd + " | sudo -S mkdir -p /novarewind");
-            error = system("echo " + sudoPwd + " | sudo -S mount " + m_mntPoint.toUtf8() + " /novarewind");
-            error = system("echo " + sudoPwd + " | sudo -S mkdir -p /novarewind/snapshots");
+            m_command = "echo " + sudoPwd + " | sudo -S mkdir -p /novarewind";
+            error = system(m_command.toUtf8());
+
+            m_command = "echo " + sudoPwd + " | sudo -S mount " + m_mntPoint + " /novarewind";
+            error = system(m_command.toUtf8());
+
+            m_command = "echo " + sudoPwd + " | sudo -S mkdir -p /novarewind/snapshots";
+            error = system(m_command.toUtf8());
         }
     }
 
@@ -402,12 +556,20 @@ int Snapshot::mount()
 
     if (QFile::exists("/novarewind/rc/novarewindrc")) {
         if (getMode() == "console" || getMode() == "daily" || getMode() == "weekly" || getMode() == "monthly") {
-            error = system("sudo chown " + userName.toUtf8() + ":" + userName.toUtf8() + " /novarewind/rc");
-            error = system("sudo chown " + userName.toUtf8() + ":" + userName.toUtf8() + " /novarewind/rc/novarewindrc");
+
+            m_command = "sudo chown " + userName + ":" + userName + " /novarewind/rc";
+            error = system(m_command.toUtf8());
+
+            m_command = "sudo chown " + userName + ":" + userName + " /novarewind/rc/novarewindrc";
+            error = system(m_command.toUtf8());
         }
         else {
-            error = system("echo " + sudoPwd + " | sudo -S chown " + userName.toUtf8() + ":" + userName.toUtf8() + " /novarewind/rc");
-            error = system("echo " + sudoPwd + " | sudo -S chown " + userName.toUtf8() + ":" + userName.toUtf8() + " /novarewind/rc/novarewindrc");
+
+            m_command = "echo " + sudoPwd + " | sudo -S chown " + userName + ":" + userName + " /novarewind/rc";
+            error = system(m_command.toUtf8());
+
+            m_command = "echo " + sudoPwd + " | sudo -S chown " + userName + ":" + userName + " /novarewind/rc/novarewindrc";
+            error = system(m_command.toUtf8());
         }
     }
 
@@ -439,10 +601,12 @@ void Snapshot::removeAutoSnapshotsIfNeeded()
 
     // Check password
     if (getMode() == "console" || getMode() == "daily" || getMode() == "weekly" || getMode() == "monthly") {
-        error = system("sudo echo");
+        m_command = "sudo echo";
+        error = system(m_command.toUtf8());
     }
     else {
-        error = system("echo " + sudoPwd + " | sudo -S echo");
+        m_command = "echo " + sudoPwd + " | sudo -S echo";
+        error = system(m_command.toUtf8());
     }
 
     if (error == 0) {

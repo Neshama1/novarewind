@@ -1,11 +1,12 @@
-import QtQuick 2.15
-import QtQml 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.12
-import org.mauikit.controls 1.3 as Maui
+import QtCore
+import QtQuick
+import QtQml
+import QtQuick.Controls
+import QtQuick.Layouts
+import QtQuick.Window
+import org.mauikit.controls as Maui
 import org.kde.novarewind 1.0
-import QtQuick.Window 2.15
-import Qt.labs.settings 1.0
+import "controls"
 
 Maui.ApplicationWindow
 {
@@ -23,6 +24,8 @@ Maui.ApplicationWindow
     property bool weekly: true
     property bool monthly: true
 
+    property int styleType: Maui.Style.Auto
+
     Settings {
         property alias keepDaily: root.keepDaily
         property alias keepWeekly: root.keepWeekly
@@ -30,6 +33,7 @@ Maui.ApplicationWindow
         property alias daily: root.daily
         property alias weekly: root.weekly
         property alias monthy: root.monthly
+        property alias styleType: root.styleType
     }
 
     width: Screen.desktopAvailableWidth - Screen.desktopAvailableWidth * 50 / 100
@@ -45,15 +49,25 @@ Maui.ApplicationWindow
     }
 
     Component.onCompleted: {
+
+        // Theme
+
+        Maui.Style.styleType = styleType === Maui.Style.Auto ? themeManager.styleType : styleType
+        Maui.Style.accentColor = "aquamarine"
+        Maui.Style.windowControlsTheme = themeManager.windowControlsTheme
+
+        // Load custom settings for automated snapshots
+
         Snapshot.setDailyConfig(daily, keepDaily)
         Snapshot.setWeeklyConfig(weekly, keepWeekly)
         Snapshot.setMonthlyConfig(monthly, keepMonthly)
     }
 
-    SettingsDialog
-    {
+    SettingsDialog {
         id: settingsDialog
     }
+
+    // TERMINAL POPUP PAGE
 
     Maui.PopupPage
     {
@@ -102,156 +116,107 @@ Maui.ApplicationWindow
             corners.bottomRightRadius: 6
         }
 
-        Rectangle
-        {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: 200
-            radius: 4
-            color: Maui.Theme.backgroundColor
-            Column {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                height: parent.height / 3
-                Label {
-                    id: lbRecoveryTitle
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.top: parent.top
-                    anchors.margins: 10
-                    //height: 15
-                    horizontalAlignment: Text.AlignLeft
-                    verticalAlignment: Text.AlignVCenter
-                    font.pixelSize: 17
-                    wrapMode: Text.WordWrap
-                    text: "Recovery options in Nova Flow OS"
-                }
-                Label {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.top: lbRecoveryTitle.bottom
-                    anchors.bottom: parent.bottom
-                    anchors.leftMargin: 10
-                    anchors.rightMargin: 10
-                    anchors.topMargin: 10
-                    //height: parent.height / 3
-                    horizontalAlignment: Text.AlignLeft
-                    verticalAlignment: Text.AlignVCenter
-                    font.pixelSize: 12
-                    wrapMode: Text.WordWrap
-                    text: "It is possible to restore the system without a graphical interface in case your PC does not boot" //\n\nTurn on your pc\nAdvanced options for Nova Flow\nNova Flow, with Linux 6.7.2-1-default (recovery mode)\nEnter your password (no prompt shown)\nType exit to restart"
-                }
-            }
-            Rectangle {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.bottom: parent.bottom
-                anchors.margins: 10
-                height: parent.height / 2
-                radius: 3
-                color: Qt.lighter(Maui.Theme.backgroundColor,1.05)
+        Maui.SectionItem {
+            label1.text: "Recovery options for Nova"
+            label2.text: "It is possible to restore the system without a graphical interface in case your PC does not boot"
+            Rectangle
+            {
+                Layout.preferredWidth: parent.width
+                Layout.preferredHeight: 100
+                Layout.topMargin: 10
+                Layout.bottomMargin: 10
+                radius: 4
+                color: "black" // Qt.lighter(Maui.Theme.alternateBackgroundColor, 1.02)
                 Label {
                     anchors.fill: parent
                     anchors.margins: 10
-                    height: parent.height / 2
-                    horizontalAlignment: Text.AlignLeft
-                    verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 12
+                    color: "white"
+                    verticalAlignment: Text.AlignVCenter
                     wrapMode: Text.WordWrap
-                    text: "Turn on your pc\nAdvanced options for Nova Flow\nNova Flow, with Linux X.X.X-X-default (recovery mode)\nEnter your password (no prompt shown)\nType exit to restart"
+                    opacity: 0.85
+                    text: "Turn on your pc\nNova Flow, with Linux x.x.x-x-default (recovery mode)\nEnter your password\nType exit to restart"
                 }
             }
-        }
-
-        Rectangle
-        {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: 40
-            radius: 4
-            color: Maui.Theme.alternateBackgroundColor
-            Label {
+            Rectangle
+            {
+                Layout.preferredWidth: parent.width
+                Layout.preferredHeight: 40
+                radius: 4
+                color: Maui.Theme.alternateBackgroundColor
+                Label {
                     anchors.fill: parent
                     anchors.margins: 10
-                    horizontalAlignment: Text.AlignLeft
-                    verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 12
                     wrapMode: Text.WordWrap
-                    text: "novarewind --help"
+                    opacity: 0.90
+                    text: "> novarewind --help"
+                }
             }
-        }
-
-        Rectangle
-        {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: 40
-            radius: 4
-            color: Maui.Theme.alternateBackgroundColor
-            Label {
+            Rectangle
+            {
+                Layout.preferredWidth: parent.width
+                Layout.preferredHeight: 40
+                radius: 4
+                color: Maui.Theme.alternateBackgroundColor
+                Label {
                     anchors.fill: parent
                     anchors.margins: 10
-                    horizontalAlignment: Text.AlignLeft
-                    verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 12
                     wrapMode: Text.WordWrap
-                    text: "novarewind list"
+                    opacity: 0.90
+                    text: "> novarewind list"
+                }
             }
-        }
-
-        Rectangle
-        {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: 40
-            radius: 4
-            color: Maui.Theme.alternateBackgroundColor
-            Label {
+            Rectangle
+            {
+                Layout.preferredWidth: parent.width
+                Layout.preferredHeight: 40
+                radius: 4
+                color: Maui.Theme.alternateBackgroundColor
+                Label {
                     anchors.fill: parent
                     anchors.margins: 10
-                    horizontalAlignment: Text.AlignLeft
-                    verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 12
                     wrapMode: Text.WordWrap
-                    text: "novarewind create"
+                    opacity: 0.90
+                    text: "> novarewind create"
+                }
             }
-        }
-        Rectangle
-        {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: 40
-            radius: 4
-            color: Maui.Theme.alternateBackgroundColor
-            Label {
+            Rectangle
+            {
+                Layout.preferredWidth: parent.width
+                Layout.preferredHeight: 40
+                radius: 4
+                color: Maui.Theme.alternateBackgroundColor
+                Label {
                     anchors.fill: parent
                     anchors.margins: 10
-                    horizontalAlignment: Text.AlignLeft
-                    verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 12
                     wrapMode: Text.WordWrap
-                    text: "novarewind restore 20240208-185814"
+                    opacity: 0.90
+                    text: "> novarewind restore 20240208-185814"
+                }
             }
-        }
-
-        Rectangle
-        {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: 40
-            radius: 4
-            color: Maui.Theme.alternateBackgroundColor
-            Label {
+            Rectangle
+            {
+                Layout.preferredWidth: parent.width
+                Layout.preferredHeight: 40
+                radius: 4
+                color: Maui.Theme.alternateBackgroundColor
+                Label {
                     anchors.fill: parent
                     anchors.margins: 10
-                    horizontalAlignment: Text.AlignLeft
-                    verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 12
                     wrapMode: Text.WordWrap
-                    text: "novarewind remove 20240208-185814"
+                    opacity: 0.90
+                    text: "> novarewind remove 20240208-185814"
+                }
             }
         }
     }
+
+    // APP INTERFACE
 
     Maui.SideBarView
     {
@@ -280,6 +245,47 @@ Maui.ApplicationWindow
                         icon.name: "akonadiconsole"
                         onTriggered: popupPage.open()
                     }
+
+                    MenuSeparator {}
+
+                    MenuItem
+                    {
+                        text: i18n("Light")
+                        checkable: true
+                        autoExclusive: true
+                        onTriggered: {
+                            Maui.Style.styleType = Maui.Style.Light
+                            styleType = Maui.Style.styleType
+                        }
+                        checked: Maui.Style.styleType === Maui.Style.Light
+                    }
+
+                    MenuItem
+                    {
+                        text: i18n("Dark")
+                        checkable: true
+                        autoExclusive: true
+                        onTriggered: {
+                            Maui.Style.styleType = Maui.Style.Dark
+                            styleType = Maui.Style.styleType
+                        }
+                        checked: Maui.Style.styleType === Maui.Style.Dark
+                    }
+
+                    MenuItem
+                    {
+                        text: i18n("Custom")
+                        checkable: true
+                        autoExclusive: true
+                        onTriggered: {
+                            Maui.Style.styleType = Maui.Style.Auto
+                            styleType = Maui.Style.styleType
+                        }
+                        checked: Maui.Style.styleType === Maui.Style.Auto
+                    }
+
+                    MenuSeparator {}
+
                     MenuItem
                     {
                         text: i18n("About")
@@ -297,7 +303,7 @@ Maui.ApplicationWindow
             headBar.visible: false
 
             Component.onCompleted: {
-                stackView.push("qrc:/Home.qml")
+                stackView.push("controls/Home.qml")
             }
 
             StackView {

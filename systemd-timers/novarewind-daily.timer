@@ -1,10 +1,10 @@
 [Unit]
-Description=Execute task every day
+Description=Execute task on boot
 
 [Timer]
-OnCalendar=daily
+OnBootSec=30
+OnCalendar=*-*-* 00:00:00
 Persistent=true
-
 Unit=novarewind-daily.service
 
 [Install]

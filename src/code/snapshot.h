@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QDebug>
 #include <QVariantList>
+#include <QDate>
 
 class Snapshot : public QObject
 {
@@ -20,7 +21,7 @@ public:
 private:
     QVariantList m_points;
 
-private slots:
+private Q_SLOTS:
     void on_PointsChanged();
 
 public:
@@ -42,6 +43,10 @@ public:
     Q_INVOKABLE void removeDailySnapshotsIfNeeded();
     Q_INVOKABLE void removeWeeklySnapshotsIfNeeded();
     Q_INVOKABLE void removeMonthlySnapshotsIfNeeded();
+    Q_INVOKABLE QDate getLastSnapshot(const QString& mode);
+    Q_INVOKABLE int createManualSnapshot();
+    Q_INVOKABLE int createAutoSnapshot(const QString& mode, const QString& currentDateTime);
+    Q_INVOKABLE QDate getSnapshotDate(const QString& dateTime);
 
 private:
     QString m_password;
@@ -54,7 +59,9 @@ private:
     int m_keepWeekly;
     int m_keepMonthly;
 
-signals:
+    QString m_command;
+
+Q_SIGNALS:
     void finished(QString data);
     void failed();
 };

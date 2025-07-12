@@ -1,13 +1,13 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import org.mauikit.controls 1.3 as Maui
-import QtQuick.Layouts 1.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import org.mauikit.controls as Maui
 import org.kde.novarewind 1.0
 
 Maui.Page {
     id: getPasswordPage
 
-    showCSDControls: true
+    Maui.Controls.showCSD: true
 
     headBar.background: Rectangle {
         anchors.fill: parent
@@ -53,17 +53,18 @@ Maui.Page {
         TextField {
             id: textField
             Layout.topMargin: 25
+            echoMode: TextInput.Password
             onAccepted: {
                 password = text
                 Snapshot.setPassword(password)
                 if (Snapshot.getMode() == "create") {
-                    stackView.push("qrc:/Create.qml")
+                    stackView.push("Create.qml")
                 }
                 else if (Snapshot.getMode() == "restore") {
-                    stackView.push("qrc:/Restore.qml")
+                    stackView.push("Restore.qml")
                 }
                 else if (Snapshot.getMode() == "remove") {
-                    stackView.push("qrc:/Remove.qml")
+                    stackView.push("Remove.qml")
                 }
             }
         }
@@ -92,13 +93,13 @@ Maui.Page {
             password = textField.text
             Snapshot.setPassword(password)
             if (Snapshot.getMode() == "create") {
-                stackView.push("qrc:/Create.qml")
+                stackView.push("Create.qml")
             }
             else if (Snapshot.getMode() == "restore") {
-                stackView.push("qrc:/Restore.qml")
+                stackView.push("Restore.qml")
             }
             else if (Snapshot.getMode() == "remove") {
-                stackView.push("qrc:/Remove.qml")
+                stackView.push("Remove.qml")
             }
         }
     }

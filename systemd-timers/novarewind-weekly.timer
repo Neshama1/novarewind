@@ -1,10 +1,10 @@
 [Unit]
-Description=Execute task every week
+Description=Execute task on boot
 
 [Timer]
-OnCalendar=weekly
+OnBootSec=30
+OnCalendar=*-*-* 00:00:00
 Persistent=true
-
 Unit=novarewind-weekly.service
 
 [Install]

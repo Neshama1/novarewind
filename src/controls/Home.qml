@@ -1,13 +1,13 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import org.mauikit.controls 1.3 as Maui
-import QtQuick.Layouts 1.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import org.mauikit.controls as Maui
 import org.kde.novarewind 1.0
 
 Maui.Page {
     id: homePage
 
-    showCSDControls: true
+    Maui.Controls.showCSD: true
 
     headBar.background: Rectangle {
         anchors.fill: parent
@@ -18,11 +18,11 @@ Maui.Page {
 
     Column {
         id: labelColumn
+
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.margins: 20
-        //height: 200
 
         Label {
             anchors.left: parent.left
@@ -35,6 +35,7 @@ Maui.Page {
             anchors.right: parent.right
             font.pixelSize: 16
             wrapMode: Text.WordWrap
+            elide: Text.ElideRight
             text: "Nova Rewind allows you to create restore points, providing an easy way to revert to a previous state in case of unexpected issues or system malfunctions. It supports the Btrfs file system, creating instant restore points"
         }
     }
@@ -45,19 +46,22 @@ Maui.Page {
         anchors.right: parent.right
         anchors.top: labelColumn.bottom
         anchors.bottom: buttonsRow.top
-        imageSource: "qrc:/pixabay-backend-4496461_1280.png"
+        imageSource: "qrc:/assets/pixabay-backend-4496461_1280.png"
         opacity: 0.50
         scale: 0.80
+        fillMode: Image.PreserveAspectCrop
     }
 
     RowLayout {
         id: buttonsRow
+
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.margins: 50
         height: 200
         spacing: 30
+
         Rectangle {
             color: Maui.Theme.alternateBackgroundColor
             Layout.fillWidth: true
@@ -70,8 +74,7 @@ Maui.Page {
                 Maui.IconItem
                 {
                     Layout.topMargin: 60
-                    anchors.left: parent.left
-                    anchors.right: parent.right
+                    Layout.fillWidth: true
                     iconSource: "list-add"
                     //imageSizeHint: parent.height
                     maskRadius: Maui.Style.radiusV
@@ -79,8 +82,7 @@ Maui.Page {
                 }
                 Label {
                     Layout.bottomMargin: 60
-                    anchors.left: parent.left
-                    anchors.right: parent.right
+                    Layout.fillWidth: true
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 16
@@ -93,7 +95,7 @@ Maui.Page {
                 anchors.fill: parent
                 onClicked: {
                     Snapshot.setMode("create")
-                    password == "" ? stackView.push("qrc:/GetPassword.qml") : stackView.push("qrc:/Create.qml")
+                    password == "" ? stackView.push("qrc:/controls/GetPassword.qml") : stackView.push("qrc:/controls/Create.qml")
                 }
             }
         }
@@ -109,8 +111,7 @@ Maui.Page {
                 Maui.IconItem
                 {
                     Layout.topMargin: 60
-                    anchors.left: parent.left
-                    anchors.right: parent.right
+                    Layout.fillWidth: true
                     iconSource: "accept_time_event"
                     //imageSizeHint: parent.height
                     maskRadius: Maui.Style.radiusV
@@ -118,8 +119,7 @@ Maui.Page {
                 }
                 Label {
                     Layout.bottomMargin: 60
-                    anchors.left: parent.left
-                    anchors.right: parent.right
+                    Layout.fillWidth: true
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 16
@@ -131,7 +131,7 @@ Maui.Page {
                 anchors.fill: parent
                 onClicked: {
                     Snapshot.setMode("restore")
-                    password == "" ? stackView.push("qrc:/GetPassword.qml") : stackView.push("qrc:/Restore.qml")
+                    password == "" ? stackView.push("qrc:/controls/GetPassword.qml") : stackView.push("qrc:/controls/Restore.qml")
                 }
             }
         }
@@ -146,8 +146,7 @@ Maui.Page {
                 Maui.IconItem
                 {
                     Layout.topMargin: 60
-                    anchors.left: parent.left
-                    anchors.right: parent.right
+                    Layout.fillWidth: true
                     iconSource: "list-remove"
                     //imageSizeHint: parent.height
                     maskRadius: Maui.Style.radiusV
@@ -155,8 +154,7 @@ Maui.Page {
                 }
                 Label {
                     Layout.bottomMargin: 60
-                    anchors.left: parent.left
-                    anchors.right: parent.right
+                    Layout.fillWidth: true
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 16
@@ -168,7 +166,7 @@ Maui.Page {
                 anchors.fill: parent
                 onClicked: {
                     Snapshot.setMode("remove")
-                    password == "" ? stackView.push("qrc:/GetPassword.qml") : stackView.push("qrc:/Remove.qml")
+                    password == "" ? stackView.push("qrc:/controls/GetPassword.qml") : stackView.push("qrc:/controls/Remove.qml")
                 }
             }
         }

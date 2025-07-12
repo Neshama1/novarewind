@@ -1,8 +1,8 @@
 // SettingsDialog.qml
 
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import org.mauikit.controls 1.3 as Maui
+import QtQuick
+import QtQuick.Controls
+import org.mauikit.controls as Maui
 import org.kde.novarewind 1.0
 
 Maui.SettingsDialog
@@ -45,16 +45,16 @@ Maui.SettingsDialog
         corners.bottomRightRadius: 6
     }
 
-    Maui.SectionGroup
-    {
-        title: i18n("Schedule")
-        description: i18n("Set up automatic snapshots")
+    Maui.SectionGroup {
 
-        Maui.SectionItem
+        title: i18n("Daily")
+        //description: i18n("Daily snapshots")
+        template.label1.font.pixelSize: 16
+
+        Maui.FlexSectionItem
         {
-            label1.text: i18n("Daily")
-            label2.text: i18n("Activate daily snapshots. Keep snapshots of the last ") + keepDaily
-            + i18n(" days.")
+            label1.text: i18n("Enable")
+            label2.text: i18n("Activate snapshots")
             Switch {
                 checkable: true
                 checked: daily ? true : false
@@ -64,6 +64,12 @@ Maui.SettingsDialog
                     Snapshot.setDailyConfig(daily, keepDaily)
                 }
             }
+        }
+
+        Maui.FlexSectionItem {
+            //label1.text: i18n("Days")
+            label2.text: i18n("Create restore point for ") + keepDaily + i18n(" days")
+            wide: false
             SpinBox {
                 id: spinBoxDaily
                 from: 1
@@ -80,12 +86,18 @@ Maui.SettingsDialog
                 }
             }
         }
+    }
 
-        Maui.SectionItem
+    Maui.SectionGroup {
+
+        title: i18n("Weekly")
+        //description: i18n("Weekly snapshots")
+        template.label1.font.pixelSize: 16
+
+        Maui.FlexSectionItem
         {
-            label1.text: i18n("Weekly")
-            label2.text: i18n("Activate weekly snapshots. Keep snapshots of the last ") + keepWeekly
-            + i18n(" weeks.")
+            label1.text: i18n("Enable")
+            label2.text: i18n("Activate snapshots")
             Switch {
                 checkable: true
                 checked: weekly ? true : false
@@ -95,6 +107,12 @@ Maui.SettingsDialog
                     Snapshot.setWeeklyConfig(weekly, keepWeekly)
                 }
             }
+        }
+
+        Maui.FlexSectionItem {
+            //label1.text: i18n("Weeks")
+            label2.text: i18n("Create restore point for ") + keepWeekly + i18n(" weeks")
+            wide: false
             SpinBox {
                 id: spinBoxWeekly
                 from: 1
@@ -111,12 +129,18 @@ Maui.SettingsDialog
                 }
             }
         }
+    }
 
-        Maui.SectionItem
+    Maui.SectionGroup {
+
+        title: i18n("Monthly")
+        //description: i18n("Monthly snapshots")
+        template.label1.font.pixelSize: 16
+
+        Maui.FlexSectionItem
         {
-            label1.text: i18n("Monthly")
-            label2.text: i18n("Activate monthy snapshots. Keep snapshots of the last ") + keepMonthly
-            + i18n(" months.")
+            label1.text: i18n("Enable")
+            label2.text: i18n("Activate snapshots")
             Switch {
                 checkable: true
                 checked: monthly ? true : false
@@ -126,6 +150,12 @@ Maui.SettingsDialog
                     Snapshot.setMonthlyConfig(monthly, keepMonthly)
                 }
             }
+        }
+
+        Maui.FlexSectionItem {
+            //label1.text: i18n("Months")
+            label2.text: i18n("Create restore point for ") + keepDaily + i18n(" months")
+            wide: false
             SpinBox {
                 id: spinBoxMonthly
                 from: 1

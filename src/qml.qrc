@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>controls/Home.qml</file>
+        <file>controls/GetPassword.qml</file>
+        <file>controls/Create.qml</file>
+        <file>controls/Remove.qml</file>
+        <file>controls/RemoveConfirmation.qml</file>
+        <file>controls/Restore.qml</file>
+        <file>controls/RestoreConfirmation.qml</file>
+        <file>controls/RestoreResult.qml</file>
+        <file>controls/SettingsDialog.qml</file>
+    </qresource>
+</RCC>

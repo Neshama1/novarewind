@@ -1,10 +1,10 @@
 [Unit]
-Description=Execute task every month
+Description=Execute task on boot
 
 [Timer]
-OnCalendar=monthly
+OnBootSec=30
+OnCalendar=*-*-* 00:00:00
 Persistent=true
-
 Unit=novarewind-monthly.service
 
 [Install]
