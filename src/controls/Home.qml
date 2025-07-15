@@ -46,10 +46,10 @@ Maui.Page {
         anchors.right: parent.right
         anchors.top: labelColumn.bottom
         anchors.bottom: buttonsRow.top
+        anchors.margins: 40
         imageSource: "qrc:/assets/pixabay-backend-4496461_1280.png"
         opacity: 0.50
-        scale: 0.80
-        fillMode: Image.PreserveAspectCrop
+        fillMode: Image.PreserveAspectFit
     }
 
     RowLayout {
