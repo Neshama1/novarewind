@@ -42,6 +42,7 @@ target_link_libraries(${PROJECT_NAME}
     MauiKit4::FileBrowsing
     MauiMan4
     Qt6::Core
+    Qt6::Gui
     Qt6::Widgets
     Qt6::Quick
     Qt6::Qml

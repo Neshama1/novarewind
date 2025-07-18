@@ -41,6 +41,10 @@ Maui.ApplicationWindow
 
     ListModel { id: snapshotModel }
 
+    ThemeManager {
+        id: themeManager
+    }
+
     Connections {
         target: Snapshot
         onFailed: {
@@ -225,8 +229,18 @@ Maui.ApplicationWindow
 
         sideBarContent:  Maui.Page
         {
+            id: sideBarContent
+
             anchors.fill: parent
+
             Maui.Theme.colorSet: Maui.Theme.Window
+
+            property color backgroundColor: Maui.Theme.backgroundColor
+
+            headBar.background: Rectangle {
+                anchors.fill: parent
+                color: sideBarContent.backgroundColor
+            }
 
             headBar.leftContent: [
                 Maui.ToolButtonMenu

@@ -132,7 +132,7 @@ int Snapshot::createSnapshot()
 
         // Si han pasado 7 días o más o último snapshot semanal fue en día distinto de lunes y hoy es lunes
 
-        if ((days >= 7) || ((days < 7) && ((lastSnapshot.day() != 1 && (today.day() == 1)))) || lastSnapshot.isNull()) {
+        if ((days >= 7) || ((days < 7) && ((lastSnapshot.dayOfWeek() != 1 && (today.dayOfWeek() == 1)))) || lastSnapshot.isNull()) {
             error = createAutoSnapshot("weekly", currentDateTime);
         }
     }

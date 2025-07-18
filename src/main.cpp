@@ -113,7 +113,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 		#endif
 
     	app.setOrganizationName("KDE");
-    	app.setWindowIcon(QIcon("qrc:/assets/logo.svg"));
+        app.setWindowIcon(QIcon(":/assets/logo.svg"));
     	QGuiApplication::setDesktopFileName(QStringLiteral("project"));
     	KLocalizedString::setApplicationDomain("novarewind");
 
@@ -142,7 +142,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
         about.addComponent(FBData.name(), MauiKitFileBrowsing::buildVersion(), FBData.version(), FBData.webAddress());
 
         KAboutData::setApplicationData(about);
-        MauiApp::instance()->setIconName(":/assets/logo.svg");
+        MauiApp::instance()->setIconName("qrc:/assets/logo.svg");
 
         // COMMAND LINE
 
