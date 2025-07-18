@@ -124,7 +124,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     	// ABOUT DIALOG
 
     	KAboutData about(QStringLiteral("novarewind"),
-        	             QStringLiteral("novarewind"),
+        	             QStringLiteral("Nova Rewind"),
             	         NOVAREWIND_VERSION_STRING,
                          i18n(""),
                          KAboutLicense::LGPL_V3,
