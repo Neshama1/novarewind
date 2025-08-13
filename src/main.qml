@@ -13,6 +13,13 @@ Maui.ApplicationWindow
     id: root
     title: qsTr("")
 
+    Maui.Style.styleType: themeManager.styleType
+    Maui.Style.accentColor: themeManager.accentColor
+    Maui.Style.defaultSpacing: themeManager.spacingSize
+    Maui.Style.defaultPadding: themeManager.paddingSize
+    Maui.Style.contentMargins: themeManager.marginSize
+    Maui.Style.radiusV: themeManager.borderRadius
+
     property string password
     property int removeIndex
     property int restoreIndex
@@ -57,7 +64,6 @@ Maui.ApplicationWindow
         // Theme
 
         Maui.Style.styleType = styleType === Maui.Style.Auto ? themeManager.styleType : styleType
-        Maui.Style.accentColor = "aquamarine"
         Maui.Style.windowControlsTheme = themeManager.windowControlsTheme
 
         // Load custom settings for automated snapshots
@@ -288,14 +294,14 @@ Maui.ApplicationWindow
 
                     MenuItem
                     {
-                        text: i18n("Custom")
+                        text: i18n("System")
                         checkable: true
                         autoExclusive: true
                         onTriggered: {
-                            Maui.Style.styleType = Maui.Style.Auto
-                            styleType = Maui.Style.styleType
+                            Maui.Style.styleType = themeManager.styleType
+                            styleType = Maui.Style.Auto
                         }
-                        checked: Maui.Style.styleType === Maui.Style.Auto
+                        checked: styleType === Maui.Style.Auto
                     }
 
                     MenuSeparator {}
