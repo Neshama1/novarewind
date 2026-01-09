@@ -50,14 +50,12 @@ Maui.Page {
         z: 2
 
         Label {
-            anchors.left: parent.left
-            anchors.right: parent.right
+            Layout.preferredWidth: parent.width
             font.pixelSize: 28
             text: "Are you sure?"
         }
         Label {
-            anchors.left: parent.left
-            anchors.right: parent.right
+            Layout.preferredWidth: parent.width
             font.pixelSize: 16
             wrapMode: Text.WordWrap
             text: "Do you really want to delete this snapshot? This process cannot be undone"

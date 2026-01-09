@@ -72,14 +72,12 @@ Maui.Page {
 
         Label {
             id: labelTitle
-            anchors.left: parent.left
-            anchors.right: parent.right
+            Layout.preferredWidth: parent.width
             font.pixelSize: 28
         }
         Label {
             id: labelDescription
-            anchors.left: parent.left
-            anchors.right: parent.right
+            Layout.preferredWidth: parent.width
             font.pixelSize: 16
             wrapMode: Text.WordWrap
         }
